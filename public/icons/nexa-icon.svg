@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="NEXA AI">
+  <rect width="512" height="512" rx="108" fill="#030406"/>
+  <path d="M84 116 256 36l172 80v280l-172 80-172-80V116Z" fill="#07100f" stroke="#78f7d4" stroke-width="10"/>
+  <path d="M104 136 256 66l152 70v240l-152 70-152-70V136Z" fill="none" stroke="#66e3ff" stroke-width="5" opacity=".42"/>
+  <circle cx="256" cy="256" r="152" fill="none" stroke="#78f7d4" stroke-width="8" stroke-dasharray="18 16" opacity=".36"/>
+  <path d="M132 324V166h42l108 96v-96h50v158h-39L183 226v98h-51Z" fill="#f5f7fb"/>
+  <path d="M331 324 392 166h54l-61 158h-54Zm70-42 16-43h52l-16 43h-52Z" fill="#78f7d4"/>
+  <path d="M122 374h266" stroke="#66e3ff" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="388" cy="374" r="16" fill="#78f7d4"/>
+</svg>

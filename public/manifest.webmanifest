@@ -1,0 +1,44 @@
+{
+  "name": "NEXA AI Property Intelligence",
+  "short_name": "NEXA AI",
+  "description": "AI-powered intelligence for land, plots, flats, villas and real estate investments.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "background_color": "#030406",
+  "theme_color": "#030406",
+  "orientation": "portrait",
+  "categories": ["business", "finance", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/nexa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "India Map",
+      "short_name": "Map",
+      "description": "Open the India intelligence map.",
+      "url": "/map",
+      "icons": [{ "src": "/icons/nexa-icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Investor Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open the investor dashboard.",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icons/nexa-icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "NEXA Copilot",
+      "short_name": "Copilot",
+      "description": "Open the AI copilot chat.",
+      "url": "/#copilot",
+      "icons": [{ "src": "/icons/nexa-icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}

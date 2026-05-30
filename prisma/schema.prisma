@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AssetClass {
+  LAND
+  HOME
+  APARTMENT
+  VILLA
+}
+
+enum OpportunityLevel {
+  HIGH
+  MODERATE
+  LOW
+}
+
+model District {
+  id                String           @id @default(cuid())
+  name              String
+  state             String
+  opportunity       OpportunityLevel @default(MODERATE)
+  intelligenceScore Int
+  populationTrend   String
+  landRate          String
+  flatRate          String
+  growthForecast    String
+  demandForecast    String
+  riskIndicators    String[]
+  aiReport          String
+  properties        Property[]
+  savedLocations    SavedLocation[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@unique([name, state])
+  @@index([state])
+  @@index([opportunity])
+}
+
+model Builder {
+  id         String     @id @default(cuid())
+  name       String
+  trustScore Int
+  riskNotes  String[]
+  projects   Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Property {
+  id                    String      @id @default(cuid())
+  title                 String
+  assetClass            AssetClass
+  districtId            String
+  district              District    @relation(fields: [districtId], references: [id])
+  builderId             String?
+  builder               Builder?    @relation(fields: [builderId], references: [id])
+  priceInInr            BigInt
+  areaLabel             String
+  investmentScore       Int
+  builderTrustScore     Int?
+  rentalYieldEstimate   Float?
+  appreciationForecast  Float
+  legalRiskScore        Int
+  liquidityScore        Int
+  infrastructureSignals String[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  @@index([assetClass])
+  @@index([districtId])
+  @@index([investmentScore])
+}
+
+model User {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  name           String?
+  watchlists     Watchlist[]
+  savedSearches  SavedSearch[]
+  savedLocations SavedLocation[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Watchlist {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SavedSearch {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  query     String
+  filters   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SavedLocation {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  districtId String
+  district   District @relation(fields: [districtId], references: [id])
+  thesis     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

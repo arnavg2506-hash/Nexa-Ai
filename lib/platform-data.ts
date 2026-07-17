@@ -75,6 +75,22 @@ export type PortfolioAsset = {
   alert: string;
 };
 
+export const intelligenceMeta = {
+  status: "illustrative" as const,
+  asOf: "July 2026 product demo",
+  coverage: "33 India intelligence nodes and 11 national corridor models",
+  methodology:
+    "Composite demonstration scores combining infrastructure maturity, market depth, liquidity, demand and risk assumptions. Corridor geometry is schematic rather than a surveyed alignment.",
+  disclaimer:
+    "Not a live government record, title opinion, valuation, financial advice or guarantee of future returns.",
+  corridorSource: {
+    publisher: "Department for Promotion of Industry and Internal Trade, Government of India",
+    title: "National Industrial Corridor Development Programme",
+    url: "https://www.dpiit.gov.in/offerings/schemes-and-services/details/industrial-corridors-YjM2UDNtQWa",
+    verifiedAt: "17 July 2026",
+  },
+};
+
 export const platformModules: PlatformModule[] = [
   {
     key: "land",
@@ -146,16 +162,16 @@ export const nationalCorridors: NationalCorridor[] = [
     name: "Delhi Mumbai Industrial Corridor",
     shortName: "DMIC",
     route: "M220 210 C204 238 185 262 170 317 C158 358 167 394 206 415 C246 437 286 433 315 421",
-    states: ["Delhi NCR", "Haryana", "Rajasthan", "Gujarat", "Maharashtra"],
-    nodes: ["Delhi NCR", "Hisar", "Jaipur", "Jodhpur-Pali", "Ahmedabad", "Dholera", "Shendra-Bidkin", "Mumbai-Panvel"],
-    thesis: "Western DFC-backed manufacturing and logistics spine from NCR to Gujarat and Maharashtra.",
+    states: ["Uttar Pradesh", "Haryana", "Rajasthan", "Madhya Pradesh", "Gujarat", "Maharashtra"],
+    nodes: ["Greater Noida", "Nangal Chaudhary", "Vikram Udyogpuri", "Jodhpur-Pali", "Dholera SIR", "Shendra-Bidkin", "Dighi Port"],
+    thesis: "Western DFC-backed manufacturing and logistics programme with approved industrial and multimodal nodes.",
   },
   {
     name: "Amritsar Kolkata Industrial Corridor",
     shortName: "AKIC",
     route: "M185 108 C197 145 213 186 220 210 C255 230 289 242 328 262 C369 281 405 269 443 246",
-    states: ["Punjab", "Haryana", "Uttar Pradesh", "Bihar", "Jharkhand", "West Bengal"],
-    nodes: ["Amritsar", "Rajpura-Patiala", "Delhi NCR", "Agra-Prayagraj", "Varanasi", "Gaya", "Kolkata"],
+    states: ["Punjab", "Haryana", "Uttar Pradesh", "Uttarakhand", "Bihar", "Jharkhand", "West Bengal"],
+    nodes: ["Rajpura-Patiala", "Hisar", "Khurpia", "Agra", "Prayagraj", "Gaya", "Raghunathpur"],
     thesis: "Eastern DFC-influenced corridor linking North Indian demand with eastern manufacturing nodes.",
   },
   {
@@ -163,23 +179,23 @@ export const nationalCorridors: NationalCorridor[] = [
     shortName: "CBIC",
     route: "M286 493 C306 501 334 508 365 512",
     states: ["Karnataka", "Andhra Pradesh", "Tamil Nadu"],
-    nodes: ["Tumakuru", "Bengaluru", "Krishnapatnam", "Chennai"],
+    nodes: ["Krishnapatnam", "Tumakuru", "Ponneri"],
     thesis: "South India electronics, auto, aerospace and high-skill manufacturing belt.",
   },
   {
-    name: "Vizag Chennai Industrial Corridor",
+    name: "East Coast Industrial Corridor (VCIC Phase 1)",
     shortName: "VCIC",
     route: "M385 358 C381 403 373 457 365 512",
-    states: ["Andhra Pradesh", "Tamil Nadu"],
-    nodes: ["Visakhapatnam", "Koparthy", "Orvakal", "Krishnapatnam", "Chennai"],
-    thesis: "Port, electronics, energy and manufacturing chain across Andhra Pradesh into Chennai.",
+    states: ["West Bengal", "Odisha", "Andhra Pradesh", "Tamil Nadu"],
+    nodes: ["Visakhapatnam", "Kopparthy", "Chittoor"],
+    thesis: "East Coast port and manufacturing programme, with VCIC represented as its first phase.",
   },
   {
     name: "Hyderabad Bengaluru Industrial Corridor",
     shortName: "HBIC",
     route: "M291 403 C294 437 300 470 302 499",
     states: ["Telangana", "Andhra Pradesh", "Karnataka"],
-    nodes: ["Hyderabad", "Zaheerabad", "Orvakal", "Bengaluru"],
+    nodes: ["Orvakal Industrial Area"],
     thesis: "Southern inland manufacturing connector between Hyderabad’s pharma/tech base and Bengaluru’s high-skill economy.",
   },
   {
@@ -187,23 +203,23 @@ export const nationalCorridors: NationalCorridor[] = [
     shortName: "BMIC",
     route: "M315 421 C308 448 302 474 302 499",
     states: ["Maharashtra", "Karnataka"],
-    nodes: ["Mumbai-Panvel", "Dighi Port", "Pune", "Tumakuru", "Bengaluru"],
+    nodes: ["Dharwad", "Satara"],
     thesis: "High-value western-southern technology, mobility and manufacturing axis.",
   },
   {
     name: "Odisha Economic Corridor",
     shortName: "OEC",
     route: "M443 246 C426 275 414 294 411 301 C404 320 396 340 385 358",
-    states: ["Odisha", "West Bengal", "Andhra Pradesh"],
-    nodes: ["Kolkata", "Bhubaneswar", "Visakhapatnam"],
-    thesis: "Eastern mineral, port, manufacturing and logistics opportunity belt centered on Odisha and adjoining coastal nodes.",
+    states: ["Odisha"],
+    nodes: ["Paradip-Kendrapada-Dhamra-Subarnarekha", "Gopalpur-Bhubaneswar-Kalinganagar"],
+    thesis: "Odisha port, mineral, manufacturing and logistics programme represented here as a schematic market corridor.",
   },
   {
     name: "Hyderabad Nagpur Industrial Corridor",
     shortName: "HNIC",
     route: "M270 329 C278 358 287 382 292 407",
     states: ["Maharashtra", "Telangana"],
-    nodes: ["Nagpur", "Hyderabad"],
+    nodes: ["Zaheerabad Phase 1"],
     thesis: "Central India industrial connector linking logistics, warehousing and pharma demand.",
   },
   {
@@ -211,7 +227,7 @@ export const nationalCorridors: NationalCorridor[] = [
     shortName: "HWIC",
     route: "M291 403 C302 391 311 382 317 378",
     states: ["Telangana"],
-    nodes: ["Hyderabad", "Warangal"],
+    nodes: ["Hyderabad Phase 1"],
     thesis: "Telangana industrial extension joining Hyderabad’s capital stack with Warangal’s manufacturing and education base.",
   },
   {
@@ -219,7 +235,7 @@ export const nationalCorridors: NationalCorridor[] = [
     shortName: "CBIC-K",
     route: "M302 499 C306 520 310 536 312 538 C296 546 282 553 270 557",
     states: ["Karnataka", "Tamil Nadu", "Kerala"],
-    nodes: ["Bengaluru", "Coimbatore", "Palakkad", "Kochi"],
+    nodes: ["Palakkad", "Dharmapuri"],
     thesis: "South-west extension connecting high-skill manufacturing, textile/engineering clusters and port/NRI demand.",
   },
   {
@@ -227,8 +243,8 @@ export const nationalCorridors: NationalCorridor[] = [
     shortName: "DNIC",
     route: "M220 210 C235 253 254 293 270 329",
     states: ["Delhi NCR", "Madhya Pradesh", "Maharashtra"],
-    nodes: ["Delhi NCR", "Nagpur"],
-    thesis: "North-south highway and future freight influence corridor for central India repricing.",
+    nodes: ["Delhi-Nagpur alignment (conceptual)"],
+    thesis: "North-south industrial corridor programme currently represented as a conceptual alignment.",
   },
 ];
 

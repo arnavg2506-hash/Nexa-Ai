@@ -62,10 +62,11 @@ export function PlatformHero() {
         <nav className="hidden items-center gap-7 text-sm text-white/65 md:flex">
           <a className="transition hover:text-white" href="#modules">Modules</a>
           <Link className="transition hover:text-white" href="/map">Map</Link>
+          <a className="transition hover:text-white" href="#trust">Trust</a>
           <a className="transition hover:text-white" href="#districts">Districts</a>
           <Link className="transition hover:text-white" href="/compare">Compare</Link>
           <Link className="transition hover:text-white" href="/dashboard">Investor OS</Link>
-          <a className="transition hover:text-white" href="#pricing">Pricing</a>
+          <a className="transition hover:text-white" href="#private-briefing">Contact</a>
         </nav>
 
         <a
@@ -84,9 +85,9 @@ export function PlatformHero() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl"
         >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-volt/25 bg-volt/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.26em] text-volt">
-            <span className="size-1.5 rounded-full bg-volt shadow-[0_0_18px_rgba(120,247,212,0.95)]" />
-            Future operating system for real estate decisions
+          <div className="mb-6 flex w-fit max-w-full items-start gap-2 rounded-full border border-volt/25 bg-volt/10 px-3 py-2 text-[10px] font-semibold uppercase leading-5 tracking-[0.18em] text-volt sm:inline-flex sm:items-center sm:text-xs sm:tracking-[0.26em]">
+            <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-volt shadow-[0_0_18px_rgba(120,247,212,0.95)] sm:mt-0" />
+            <span>Future operating system for real estate decisions</span>
           </div>
 
           <h1 className="font-display text-5xl font-semibold leading-[1.02] text-white sm:text-6xl lg:text-7xl">
@@ -97,7 +98,7 @@ export function PlatformHero() {
           </p>
 
           <GlassCard className="mt-9 max-w-3xl p-3">
-            <div className="relative z-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative z-10 grid grid-cols-[48px_minmax(0,1fr)] items-center gap-3 sm:flex sm:flex-row">
               <div className="grid size-12 shrink-0 place-items-center rounded-[8px] border border-volt/25 bg-volt/10 text-volt">
                 <Search aria-hidden="true" className="size-5" />
               </div>
@@ -107,7 +108,7 @@ export function PlatformHero() {
                   key={prompt}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-1 truncate text-sm text-white sm:text-base"
+                  className="mt-1 min-h-12 break-words text-sm leading-6 text-white sm:min-h-0 sm:text-base"
                 >
                   {searchPrompts[prompt]}
                 </motion.p>
@@ -115,7 +116,7 @@ export function PlatformHero() {
               <button
                 type="button"
                 onClick={handleAnalyze}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-platinum px-4 text-sm font-semibold text-graphite-950 transition hover:bg-white"
+                className="col-span-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-platinum px-4 text-sm font-semibold text-graphite-950 transition hover:bg-white sm:col-auto"
               >
                 <BrainCircuit aria-hidden="true" className="size-4" />
                 Analyze
@@ -205,7 +206,7 @@ export function PlatformHero() {
       <a
         href="#modules"
         aria-label="Jump to workspace options for land, homes, and maps"
-        className="absolute left-4 right-4 top-[calc(100vh-3.9rem)] z-20 mx-auto flex max-w-4xl items-center justify-center gap-2 rounded-full border border-white/10 bg-graphite-950/64 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/55 shadow-line backdrop-blur-xl transition hover:border-volt/35 hover:text-white"
+        className="relative z-20 mx-auto mt-10 flex max-w-4xl items-center justify-center gap-2 rounded-full border border-white/10 bg-graphite-950/64 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/55 shadow-line backdrop-blur-xl transition hover:border-volt/35 hover:text-white"
       >
         <span className="text-volt">Enter</span>
         <span>Land & plots</span>

@@ -4,8 +4,10 @@ import { FloatingAssistant } from "@/components/floating-assistant";
 import { PWARegister } from "@/components/pwa-register";
 import "./globals.css";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nexa-ai.example"),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "NEXA AI | AI Real Estate Intelligence Platform",
     template: "%s | NEXA AI",
@@ -14,6 +16,9 @@ export const metadata: Metadata = {
     "NEXA AI is a futuristic AI-powered real estate intelligence platform for land, plots, homes, apartments, districts, builders, and investments.",
   manifest: "/manifest.webmanifest",
   applicationName: "NEXA AI",
+  category: "technology",
+  creator: "NEXA AI",
+  publisher: "NEXA AI",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -21,7 +26,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/icons/nexa-icon.svg",
-    apple: "/icons/nexa-icon.svg",
+    apple: "/icons/nexa-apple-touch-icon.png",
   },
   keywords: [
     "AI real estate",
@@ -36,6 +41,8 @@ export const metadata: Metadata = {
     title: "NEXA AI",
     description: "Stop Searching. Start Knowing.",
     type: "website",
+    url: "/",
+    siteName: "NEXA AI",
     images: [
       {
         url: "/assets/nexa-villa-hero.png",
@@ -50,6 +57,10 @@ export const metadata: Metadata = {
     title: "NEXA AI",
     description: "AI-powered intelligence for land, plots, flats, villas and real estate investments.",
     images: ["/assets/nexa-villa-hero.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

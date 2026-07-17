@@ -8,6 +8,8 @@ import { IndiaIntelligenceMap } from "@/components/sections/india-intelligence-m
 import { InvestorDashboard } from "@/components/sections/investor-dashboard";
 import { PlatformHero } from "@/components/sections/platform-hero";
 import { PlatformPricing } from "@/components/sections/platform-pricing";
+import { PrivateBriefing } from "@/components/sections/private-briefing";
+import { TrustCenter } from "@/components/sections/trust-center";
 import { LoadingScreen } from "@/components/loading-screen";
 import { NexaLogo } from "@/components/brand/nexa-logo";
 
@@ -31,9 +33,11 @@ export function NexaExperience() {
         <PlatformHero />
         <EntryExperience />
         <IndiaIntelligenceMap />
+        <TrustCenter />
         <DistrictIntelligence />
         <ComparisonEngine />
         <InvestorDashboard />
+        <PrivateBriefing />
         <PlatformPricing />
       </main>
       <Footer />
@@ -49,13 +53,14 @@ function Footer() {
           <NexaLogo compact />
           <p>NEXA AI. India-wide real estate intelligence OS for land, homes, corridors and investors.</p>
         </div>
-        <div className="flex gap-5">
+        <div className="flex flex-wrap gap-x-5 gap-y-2">
           <a className="transition hover:text-white" href="#modules">Modules</a>
           <a className="transition hover:text-white" href="/map">Map</a>
+          <a className="transition hover:text-white" href="#trust">Trust</a>
           <a className="transition hover:text-white" href="#districts">Districts</a>
           <a className="transition hover:text-white" href="/compare">Compare</a>
           <a className="transition hover:text-white" href="/dashboard">Dashboard</a>
-          <a className="transition hover:text-white" href="#pricing">Access</a>
+          <a className="transition hover:text-white" href="#private-briefing">Contact</a>
         </div>
       </div>
     </footer>

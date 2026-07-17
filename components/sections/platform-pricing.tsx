@@ -68,11 +68,11 @@ export function PlatformPricing() {
                 </div>
 
                 <AnimatedButton
-                  href="#copilot"
+                  href="#private-briefing"
                   variant={plan.highlighted ? "primary" : "secondary"}
                   className="relative z-10 mt-8 w-full"
                 >
-                  Request access
+                  Request private briefing
                 </AnimatedButton>
               </GlassCard>
             </motion.div>

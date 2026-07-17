@@ -5,6 +5,7 @@ import { BellRing, Bookmark, BriefcaseBusiness, Radar, Sparkles } from "lucide-r
 import Link from "next/link";
 import { aiRecommendations, portfolioAssets } from "@/lib/platform-data";
 import { Counter } from "@/components/ui/counter";
+import { DataDisclosure } from "@/components/ui/data-disclosure";
 import { GlassCard } from "@/components/ui/glass-card";
 import { SectionHeading } from "@/components/ui/section-heading";
 
@@ -18,15 +19,18 @@ export function InvestorDashboard() {
 
   return (
     <section id="investor-os" className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
-      <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-volt/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Investor dashboard"
           title="Watchlists, saved searches, portfolio tracking and growth alerts."
-          copy="The investor OS turns real estate into a continuously monitored intelligence portfolio with alerts, saved locations, and AI recommendations."
+          copy="The investor OS brings holdings, saved locations, evidence triggers and AI recommendations into one decision surface. This release shows an illustrative watchlist."
         />
 
-        <div className="mt-14 grid gap-5 xl:grid-cols-[0.68fr_1.32fr]">
+        <div className="mt-8 max-w-4xl">
+          <DataDisclosure compact />
+        </div>
+
+        <div className="mt-8 grid gap-5 xl:grid-cols-[0.68fr_1.32fr]">
           <div className="grid gap-5">
             <GlassCard className="p-6">
               <div className="relative z-10 flex items-center justify-between">
@@ -48,9 +52,9 @@ export function InvestorDashboard() {
               </div>
               <div className="relative z-10 mt-5 space-y-3">
                 {[
-                  "Dholera corridor land velocity increased 18%",
-                  "Nagpur logistics demand crossed NEXA trigger",
-                  "Vizag port-linked absorption moved above baseline",
+                  "Sample trigger: Dholera infrastructure evidence moved above threshold",
+                  "Sample trigger: Nagpur logistics demand moved above baseline",
+                  "Sample trigger: Vizag port-linked absorption needs review",
                 ].map((alert) => (
                   <div key={alert} className="rounded-[8px] border border-white/10 bg-white/[0.04] p-3 text-sm text-white/65">
                     {alert}
@@ -63,14 +67,14 @@ export function InvestorDashboard() {
           <GlassCard className="p-6">
             <div className="relative z-10 flex flex-col justify-between gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-center">
               <div>
-                <p className="text-xs uppercase tracking-[0.24em] text-white/40">Tracked portfolio</p>
+                <p className="text-xs uppercase tracking-[0.24em] text-white/40">Illustrative portfolio</p>
                 <h3 className="mt-2 font-display text-2xl font-semibold text-white">
-                  Live acquisition and ownership intelligence
+                  Acquisition and ownership intelligence
                 </h3>
               </div>
               <div className="flex items-center gap-2 rounded-full border border-volt/20 bg-volt/10 px-3 py-2 text-xs text-volt">
                 <Radar aria-hidden="true" className="size-4" />
-                Monitoring 24/7
+                Demonstration watchlist
               </div>
             </div>
 

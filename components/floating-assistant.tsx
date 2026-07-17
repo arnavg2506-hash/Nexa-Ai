@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Bot, Eraser, GitCompare, Mic, Send, X } from "lucide-react";
+import { Bot, Eraser, GitCompare, Send, Sparkles, X } from "lucide-react";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { NexaLogo } from "@/components/brand/nexa-logo";
 import { copilotPrompts } from "@/lib/platform-data";
@@ -34,11 +34,18 @@ export function FloatingAssistant() {
   const [prompt, setPrompt] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([openingMessage]);
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [channel, setChannel] = useState("Analysis channel ready");
+  const messagesRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const toggleRef = useRef<HTMLButtonElement | null>(null);
+  const requestInFlightRef = useRef(false);
+  const activeControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    const container = messagesRef.current;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+    }
   }, [messages, loading, open]);
 
   useEffect(() => {
@@ -51,46 +58,78 @@ export function FloatingAssistant() {
     async (nextPrompt = prompt) => {
       const trimmedPrompt = nextPrompt.trim();
 
-      if (!trimmedPrompt || loading) {
+      if (!trimmedPrompt || loading || requestInFlightRef.current) {
         return;
       }
 
+      requestInFlightRef.current = true;
+
       const userMessage = createMessage("user", trimmedPrompt);
-      const history = [...messages, userMessage].slice(-8);
+      const history = messages.slice(-8);
 
       setOpen(true);
       setPrompt("");
       setMessages((current) => [...current, userMessage]);
       setLoading(true);
 
+      const controller = new AbortController();
+      activeControllerRef.current = controller;
+      const timeout = window.setTimeout(() => controller.abort(), 28_000);
+
       try {
         const response = await fetch("/api/copilot", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
           body: JSON.stringify({
             prompt: trimmedPrompt,
             messages: history.map(({ role, content }) => ({ role, content })),
           }),
         });
-        const data = (await response.json()) as { answer?: string; error?: string };
+        const data = (await response.json().catch(() => null)) as {
+          answer?: string;
+          error?: string;
+          source?: string;
+        } | null;
+
+        if (activeControllerRef.current !== controller) {
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(data?.error ?? "NEXA could not complete that analysis.");
+        }
 
         setMessages((current) => [
           ...current,
           createMessage(
             "assistant",
-            data.answer ?? data.error ?? "I could not complete that analysis. Try asking with a city, budget, or asset type.",
+            data?.answer ?? "I could not complete that analysis. Try asking with a city, budget, or asset type.",
           ),
         ]);
-      } catch {
+        setChannel(data?.source === "openai" ? "Grounded AI response" : "Local intelligence fallback");
+      } catch (error) {
+        if (activeControllerRef.current !== controller) {
+          return;
+        }
+
         setMessages((current) => [
           ...current,
           createMessage(
             "assistant",
-            "I am offline locally, but I can still help structure the decision: compare growth catalysts, liquidity, title risk, builder trust, rental depth, and exit timing.",
+            error instanceof Error && error.name !== "AbortError"
+              ? error.message
+              : "The analysis timed out. Try a shorter question with one location, budget, or asset type.",
           ),
         ]);
+        setChannel("Connection needs attention");
       } finally {
-        setLoading(false);
+        window.clearTimeout(timeout);
+        if (activeControllerRef.current === controller) {
+          activeControllerRef.current = null;
+          requestInFlightRef.current = false;
+          setLoading(false);
+        }
       }
     },
     [loading, messages, prompt],
@@ -98,6 +137,7 @@ export function FloatingAssistant() {
 
   const closeAssistant = useCallback(() => {
     setOpen(false);
+    window.setTimeout(() => toggleRef.current?.focus(), 80);
 
     if (window.location.hash === "#copilot") {
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
@@ -139,7 +179,7 @@ export function FloatingAssistant() {
     }
 
     function closeOnEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && open) {
         closeAssistant();
       }
     }
@@ -156,7 +196,14 @@ export function FloatingAssistant() {
       window.removeEventListener("hashchange", openFromHash);
       window.removeEventListener("nexa-analyze-prompt", analyzeFromHero);
     };
-  }, [closeAssistant, runPrompt]);
+  }, [closeAssistant, open, runPrompt]);
+
+  useEffect(
+    () => () => {
+      activeControllerRef.current?.abort();
+    },
+    [],
+  );
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -164,8 +211,13 @@ export function FloatingAssistant() {
   }
 
   function resetChat() {
+    activeControllerRef.current?.abort();
+    activeControllerRef.current = null;
+    requestInFlightRef.current = false;
+    setLoading(false);
     setMessages([openingMessage]);
     setPrompt("");
+    setChannel("Analysis channel ready");
     window.setTimeout(() => inputRef.current?.focus(), 80);
   }
 
@@ -187,7 +239,7 @@ export function FloatingAssistant() {
                 <NexaLogo compact />
                 <div>
                   <p className="text-sm font-semibold text-white">NEXA AI Copilot</p>
-                  <p className="text-xs text-volt">Chat mode online</p>
+                  <p className="text-xs text-volt">{channel}</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
@@ -210,7 +262,7 @@ export function FloatingAssistant() {
               </div>
             </div>
 
-            <div className="border-b border-white/10 px-4 py-3">
+            <div className={`border-b border-white/10 px-4 py-3 ${messages.length > 1 ? "hidden" : "block"}`}>
               <div className="grid gap-2">
                 {copilotPrompts.map((suggestion) => (
                   <button
@@ -227,6 +279,7 @@ export function FloatingAssistant() {
             </div>
 
             <div
+              ref={messagesRef}
               aria-live="polite"
               aria-busy={loading}
               className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4"
@@ -237,7 +290,7 @@ export function FloatingAssistant() {
                   className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[88%] rounded-[8px] px-3 py-2 text-sm leading-6 ${
+                    className={`max-w-[88%] whitespace-pre-wrap rounded-[8px] px-3 py-2 text-sm leading-6 ${
                       message.role === "user"
                         ? "bg-volt text-graphite-950"
                         : "border border-white/10 bg-white/[0.055] text-white/75"
@@ -254,23 +307,23 @@ export function FloatingAssistant() {
                   </div>
                 </div>
               ) : null}
-              <div ref={messagesEndRef} />
             </div>
 
             <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-white/10 p-3">
               <button
                 type="button"
-                aria-label="Use sample voice mandate"
+                aria-label="Use a sample investment mandate"
                 onClick={() => void runPrompt("Compare DMIC, AKIC, VCIC and CBIC for a 1 crore real estate investment.")}
                 className="grid size-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.05] text-white/70 transition hover:border-volt/35 hover:text-volt"
               >
-                <Mic aria-hidden="true" className="size-4" />
+                <Sparkles aria-hidden="true" className="size-4" />
               </button>
               <input
                 ref={inputRef}
                 aria-label="AI property mandate"
                 value={prompt}
                 onChange={(event) => setPrompt(event.target.value)}
+                maxLength={2000}
                 placeholder="Message NEXA AI..."
                 className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/[0.045] px-4 py-2.5 text-sm text-white placeholder:text-white/35 focus:border-volt/45 focus:outline-none"
               />
@@ -283,11 +336,15 @@ export function FloatingAssistant() {
                 <Send aria-hidden="true" className="size-4" />
               </button>
             </form>
+            <p className="border-t border-white/10 px-4 py-2 text-center text-[10px] uppercase tracking-[0.12em] text-white/35">
+              Illustrative intelligence / verify title, approvals and live market evidence
+            </p>
           </motion.div>
         ) : null}
       </AnimatePresence>
 
       <motion.button
+        ref={toggleRef}
         type="button"
         aria-label={open ? "Close AI assistant" : "Open AI assistant"}
         aria-expanded={open}

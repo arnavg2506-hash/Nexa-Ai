@@ -31,7 +31,6 @@ type IntelligenceModulesProps = {
 export function IntelligenceModules({ selected }: IntelligenceModulesProps) {
   return (
     <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
-      <div aria-hidden="true" className="pointer-events-none absolute left-0 top-20 h-96 w-96 rounded-full bg-signal/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Dedicated AI modules"
@@ -180,11 +179,32 @@ function LandDashboard() {
               <p className="text-xs uppercase tracking-[0.25em] text-white/40">Opportunity scanner</p>
               <Calculator aria-hidden="true" className="size-5 text-signal" />
             </div>
-            <label className="relative z-10 mt-5 block text-sm text-white/60" htmlFor="land-budget">
-              Budget: INR {budget}L
-            </label>
+            <div className="relative z-10 mt-5 flex flex-wrap items-end justify-between gap-3">
+              <label className="text-sm text-white/60" htmlFor="land-budget">
+                Acquisition budget
+              </label>
+              <label className="flex items-center gap-2 text-sm font-semibold text-white" htmlFor="land-budget-number">
+                <span className="text-white/45">INR</span>
+                <input
+                  id="land-budget-number"
+                  aria-label="Acquisition budget in lakh rupees"
+                  type="number"
+                  min="50"
+                  max="500"
+                  step="10"
+                  value={budget}
+                  onChange={(event) => {
+                    const nextBudget = Number(event.target.value);
+                    setBudget(Math.min(500, Math.max(50, Number.isFinite(nextBudget) ? nextBudget : 50)));
+                  }}
+                  className="h-10 w-24 rounded-[8px] border border-white/12 bg-black/25 px-3 text-right text-white focus:border-volt/45 focus:outline-none"
+                />
+                <span className="text-white/45">L</span>
+              </label>
+            </div>
             <input
               id="land-budget"
+              aria-label="Acquisition budget in lakh rupees"
               type="range"
               min="50"
               max="500"

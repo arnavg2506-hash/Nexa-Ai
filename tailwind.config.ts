@@ -42,9 +42,7 @@ const config: Config = {
         shimmer: "shimmer 5s linear infinite",
       },
       keyframes: {
-        slowSpin: {
-          to: { transform: "rotate(360deg)" },
-        },
+        slowSpin: { to: { transform: "rotate(360deg)" } },
         floatSoft: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-14px)" },

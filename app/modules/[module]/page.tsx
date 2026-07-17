@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, Landmark, LayoutDashboard, Map, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Map } from "lucide-react";
 import { IntelligenceModules } from "@/components/sections/intelligence-modules";
 import { platformModules, type ModuleKey } from "@/lib/platform-data";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -18,6 +18,13 @@ const moduleCopy = {
       "A dedicated operating window for land acquisition, industrial corridors, farmland, future hotspots, legal complexity and infrastructure-led appreciation.",
     nextLabel: "Open homes workspace",
     nextHref: "/modules/homes",
+    frameTitle: "Acquisition committee view",
+    signals: [
+      ["Mandate", "Industrial and plotted land"],
+      ["Hold horizon", "7-10 years"],
+      ["Evidence gate", "Title, access and funded infrastructure"],
+      ["Primary downside", "Execution timing and exit liquidity"],
+    ],
   },
   homes: {
     title: "Homes & Apartments Intelligence Workspace",
@@ -25,8 +32,25 @@ const moduleCopy = {
       "A dedicated operating window for home buyers, families and rental investors comparing builders, lifestyle scores, rental yield, commute and appreciation.",
     nextLabel: "Open land workspace",
     nextHref: "/modules/land",
+    frameTitle: "Buyer committee view",
+    signals: [
+      ["Mandate", "Primary home and rental assets"],
+      ["Hold horizon", "5-7 years"],
+      ["Evidence gate", "Approvals, delivery and resale depth"],
+      ["Primary downside", "Builder risk and commute friction"],
+    ],
   },
-} satisfies Record<ModuleKey, { title: string; description: string; nextLabel: string; nextHref: string }>;
+} satisfies Record<
+  ModuleKey,
+  {
+    title: string;
+    description: string;
+    nextLabel: string;
+    nextHref: string;
+    frameTitle: string;
+    signals: string[][];
+  }
+>;
 
 export function generateStaticParams() {
   return platformModules.map((module) => ({ module: module.key }));
@@ -110,26 +134,24 @@ export default async function ModulePage({ params }: ModulePageProps) {
           </div>
 
           <GlassCard className="p-6">
-            <div className="relative z-10 grid gap-4">
-              {[
-                ["One page per option", "No hidden toggle state. Every mode has a clear URL."],
-                ["Keyboard first", "Cards, links and controls are reachable by Tab and Enter."],
-                ["Screen-reader labels", "Navigation and workspaces expose clear accessible names."],
-              ].map(([title, description], index) => {
-                const Icon = index === 0 ? LayoutDashboard : index === 1 ? Sparkles : Landmark;
-
-                return (
-                  <div key={title} className="flex gap-4 rounded-[8px] border border-white/10 bg-white/[0.04] p-4">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-[8px] bg-volt/10 text-volt">
-                      <Icon aria-hidden="true" className="size-5" />
-                    </span>
-                    <div>
-                      <h2 className="font-display text-lg font-semibold text-white">{title}</h2>
-                      <p className="mt-1 text-sm leading-6 text-white/65">{description}</p>
-                    </div>
+            <div className="relative z-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-volt">
+                Illustrative decision frame
+              </p>
+              <h2 className="mt-3 font-display text-2xl font-semibold text-white">
+                {copy.frameTitle}
+              </h2>
+              <dl className="mt-6 divide-y divide-white/10 border-y border-white/10">
+                {copy.signals.map(([label, value]) => (
+                  <div key={label} className="grid gap-2 py-4 sm:grid-cols-[0.42fr_0.58fr]">
+                    <dt className="text-sm text-white/45">{label}</dt>
+                    <dd className="text-sm font-semibold leading-6 text-white/85">{value}</dd>
                   </div>
-                );
-              })}
+                ))}
+              </dl>
+              <p className="mt-5 text-sm leading-6 text-white/48">
+                Scenario values are demonstrative until licensed live evidence is connected.
+              </p>
             </div>
           </GlassCard>
         </div>

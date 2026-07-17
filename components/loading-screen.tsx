@@ -8,7 +8,31 @@ export function LoadingScreen() {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const timeout = window.setTimeout(() => setVisible(false), 1050);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setVisible(false);
+      return;
+    }
+
+    let hasLoaded = false;
+    try {
+      hasLoaded = window.sessionStorage.getItem("nexa-loaded") === "true";
+    } catch {
+      hasLoaded = false;
+    }
+
+    if (hasLoaded) {
+      setVisible(false);
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      try {
+        window.sessionStorage.setItem("nexa-loaded", "true");
+      } catch {
+        // Storage may be unavailable in privacy-restricted browser contexts.
+      }
+      setVisible(false);
+    }, 800);
     return () => window.clearTimeout(timeout);
   }, []);
 

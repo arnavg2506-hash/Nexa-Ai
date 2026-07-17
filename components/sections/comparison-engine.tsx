@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeftRight, Building2, GitCompare, MapPinned, Scale } from "lucide-react";
 import { useState } from "react";
 import { comparisonRows } from "@/lib/platform-data";
+import { DataDisclosure } from "@/components/ui/data-disclosure";
 import { GlassCard } from "@/components/ui/glass-card";
 import { SectionHeading } from "@/components/ui/section-heading";
 
@@ -55,14 +56,14 @@ const comparisonModes = [
     label: "City vs City",
     description: "Macro growth and capital flow",
     icon: ArrowLeftRight,
-    title: "West vs South vs East India Growth",
-    columns: ["West India", "South India", "East India"],
+    title: "Bengaluru vs Hyderabad vs Pune",
+    columns: ["Bengaluru", "Hyderabad", "Pune"],
     rows: [
-      { metric: "Capital inflow", values: ["Very high", "Very high", "High"] },
-      { metric: "Infra catalyst", values: ["Expressways + airport", "Airport + sea links", "Metro + IT corridors"] },
-      { metric: "Affordability", values: ["Mixed", "Low", "Medium"] },
-      { metric: "Rental depth", values: ["High", "Very high", "High"] },
-      { metric: "Risk load", values: ["Builder and micro-market", "Entry price", "Oversupply pockets"] },
+      { metric: "NEXA score", values: ["90", "89", "85"] },
+      { metric: "5Y growth model", values: ["+40%", "+43%", "+36%"] },
+      { metric: "Demand depth", values: ["IT + family rental", "Tech + life sciences", "IT + auto + education"] },
+      { metric: "Infra catalyst", values: ["CBIC + BMIC + metro", "ORR + industrial corridors", "BMIC + metro"] },
+      { metric: "Risk load", values: ["Traffic + water", "Peripheral approvals", "Oversupply + commute"] },
     ],
   },
 ] as const;
@@ -80,7 +81,11 @@ export function ComparisonEngine() {
           copy="NEXA turns fragmented real estate decisions into side-by-side analytics, with every row grounded in growth, risk, liquidity, and infrastructure logic."
         />
 
-        <div className="mt-14 grid gap-5 lg:grid-cols-[0.74fr_1.26fr]">
+        <div className="mt-8 max-w-4xl">
+          <DataDisclosure compact />
+        </div>
+
+        <div className="mt-8 grid gap-5 lg:grid-cols-[0.74fr_1.26fr]">
           <div className="grid gap-4">
             {comparisonModes.map((item, index) => (
               <motion.div

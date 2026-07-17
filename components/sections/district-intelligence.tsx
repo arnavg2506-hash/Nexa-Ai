@@ -1,16 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Activity, FileText, ShieldAlert, TrendingUp } from "lucide-react";
+import { Activity, ArrowUpRight, FileText, ShieldAlert, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { districts, slugify } from "@/lib/platform-data";
 import { GlassCard } from "@/components/ui/glass-card";
 import { SectionHeading } from "@/components/ui/section-heading";
 
 export function DistrictIntelligence() {
+  const featuredDistricts = districts
+    .filter((district) => district.opportunity === "High")
+    .sort((left, right) => right.score - left.score)
+    .slice(0, 6);
+
   return (
     <section id="districts" className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
-      <div aria-hidden="true" className="pointer-events-none absolute right-0 top-1/3 h-96 w-96 rounded-full bg-iris/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="District intelligence pages"
@@ -19,7 +23,7 @@ export function DistrictIntelligence() {
         />
 
         <div className="mt-14 grid gap-5 lg:grid-cols-2">
-          {districts.map((district, index) => (
+          {featuredDistricts.map((district, index) => (
             <motion.div
               key={district.name}
               initial={{ opacity: 0, y: 24 }}
@@ -81,6 +85,16 @@ export function DistrictIntelligence() {
               </GlassCard>
             </motion.div>
           ))}
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <Link
+            href="/map"
+            className="inline-flex min-h-12 items-center gap-2 rounded-full border border-white/12 bg-white/[0.055] px-5 text-sm font-semibold text-white transition hover:border-volt/40 hover:text-volt"
+          >
+            Explore all {districts.length} intelligence nodes
+            <ArrowUpRight aria-hidden="true" className="size-4" />
+          </Link>
         </div>
       </div>
     </section>

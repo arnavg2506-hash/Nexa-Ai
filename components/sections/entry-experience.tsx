@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowUpRight,
-  BarChart3,
   Check,
   GitCompare,
   LayoutDashboard,
@@ -42,7 +41,6 @@ export function EntryExperience() {
       aria-label="Choose a dedicated NEXA AI workspace"
       className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute right-0 top-20 h-80 w-80 rounded-full bg-volt/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Entry experience"
@@ -148,22 +146,6 @@ export function EntryExperience() {
           })}
         </div>
 
-        <div className="mt-6 rounded-[8px] border border-white/10 bg-white/[0.045] p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-3">
-              <BarChart3 aria-hidden="true" className="mt-1 size-5 text-volt" />
-              <div>
-                <h3 className="font-display text-xl font-semibold text-white">
-                  Every option now opens as its own workspace.
-                </h3>
-                <p className="mt-1 text-sm leading-6 text-white/65">
-                  Keyboard users can tab through each card, press Enter, and land on a dedicated page
-                  with a clear back path.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

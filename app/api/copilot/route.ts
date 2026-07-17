@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { fallbackCopilotAnswer, getOpenAIClient } from "@/lib/ai";
+import {
+  buildCopilotContext,
+  fallbackCopilotAnswer,
+  getOpenAIClient,
+  getOpenAIModel,
+} from "@/lib/ai";
+import { getClientIp, takeRateLimit } from "@/lib/rate-limit";
 
 type CopilotMessage = {
   role: "assistant" | "user";
@@ -7,55 +13,96 @@ type CopilotMessage = {
 };
 
 export async function POST(request: Request) {
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+  if (contentLength > 25_000) {
+    return NextResponse.json({ error: "The request is too large." }, { status: 413 });
+  }
+
+  const rateLimit = takeRateLimit(`copilot:${getClientIp(request)}`, {
+    limit: 30,
+    windowMs: 10 * 60 * 1000,
+  });
+  const responseHeaders = {
+    "Cache-Control": "no-store",
+    "X-RateLimit-Remaining": String(rateLimit.remaining),
+    "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+  };
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "The copilot is receiving too many requests. Try again shortly." },
+      { status: 429, headers: responseHeaders },
+    );
+  }
+
   const body = (await request.json().catch(() => null)) as {
     messages?: CopilotMessage[];
     prompt?: string;
   } | null;
-  const prompt = body?.prompt?.trim();
+  const prompt = body?.prompt?.trim().slice(0, 2_000);
   const messages = Array.isArray(body?.messages)
     ? body.messages
         .filter(
           (message): message is CopilotMessage =>
             (message.role === "assistant" || message.role === "user") &&
             typeof message.content === "string" &&
-            message.content.trim().length > 0,
+            message.content.trim().length > 0 &&
+            message.content.length <= 2_000,
         )
         .slice(-8)
     : [];
 
   if (!prompt) {
-    return NextResponse.json({ error: "Prompt is required." }, { status: 400 });
+    return NextResponse.json({ error: "Prompt is required." }, { status: 400, headers: responseHeaders });
   }
 
   const client = getOpenAIClient();
 
   if (!client) {
-    return NextResponse.json(fallbackCopilotAnswer(prompt));
+    return NextResponse.json(fallbackCopilotAnswer(prompt), { headers: responseHeaders });
   }
 
-  const response = await client.responses.create({
-    model: "gpt-4.1-mini",
-    input: [
-      {
-        role: "system",
-        content:
-          "You are NEXA AI, a premium real estate intelligence copilot for India. Compare land, homes, districts, builders, growth, demand, liquidity, infrastructure, and risk across India’s national corridor graph: DMIC, AKIC, CBIC, VCIC, HNIC, HWIC, HBIC, OEC, BMIC, CBIC-K and DNIC. Keep responses concise, analytical, and investment-oriented. Do not provide legal or financial guarantees.",
-      },
-      {
-        role: "user",
-        content: [
-          "Conversation context:",
-          ...messages.map((message) => `${message.role.toUpperCase()}: ${message.content.trim()}`),
-          "",
-          `Latest user request: ${prompt}`,
-        ].join("\n"),
-      },
-    ],
-  });
+  try {
+    const response = await client.responses.create({
+      model: getOpenAIModel(),
+      store: false,
+      max_output_tokens: 700,
+      reasoning: { effort: "none" },
+      text: { verbosity: "medium" },
+      input: [
+        {
+          role: "system",
+          content:
+            "You are NEXA AI, a calm, exacting real estate decision copilot for India. Lead with the decision frame, then the strongest evidence, material downside, unknowns and next verification step. Use only the supplied NEXA context for specific scores, rates, forecasts and infrastructure status. Clearly label all supplied figures as illustrative product-demo estimates. Never claim live government, registry, legal, builder or market verification unless the context explicitly says it is verified. Do not promise returns or replace legal, tax, valuation or financial diligence. If evidence is missing, say what must be verified instead of inventing it.",
+        },
+        {
+          role: "user",
+          content: [
+            "NEXA context:",
+            buildCopilotContext(prompt),
+            "",
+            "Conversation context:",
+            ...messages.map((message) => `${message.role.toUpperCase()}: ${message.content.trim()}`),
+            "",
+            `Latest user request: ${prompt}`,
+          ].join("\n"),
+        },
+      ],
+    });
 
-  return NextResponse.json({
-    answer: response.output_text,
-    prompt,
-    source: "openai",
-  });
+    return NextResponse.json(
+      {
+        answer: response.output_text || fallbackCopilotAnswer(prompt).answer,
+        prompt,
+        source: "openai",
+        model: response.model,
+      },
+      { headers: responseHeaders },
+    );
+  } catch {
+    return NextResponse.json(
+      { ...fallbackCopilotAnswer(prompt), source: "fallback-after-provider-error" },
+      { headers: responseHeaders },
+    );
+  }
 }

@@ -5,6 +5,7 @@ import { Filter, Layers3, Map, Minus, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { districts, infrastructureLayers, nationalCorridors, slugify } from "@/lib/platform-data";
+import { DataDisclosure } from "@/components/ui/data-disclosure";
 import { GlassCard } from "@/components/ui/glass-card";
 
 const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -148,13 +149,17 @@ export function IndiaIntelligenceMap({ standalone = false }: IndiaIntelligenceMa
           </div>
         </div>
 
+        <div className="mb-5 max-w-4xl">
+          <DataDisclosure compact />
+        </div>
+
         <GlassCard className={`${standalone ? "min-h-[calc(100vh-172px)]" : "min-h-[760px]"} p-0`}>
           <div
             className={`relative z-10 grid ${
               standalone ? "min-h-[calc(100vh-172px)]" : "min-h-[760px]"
             } lg:grid-cols-[320px_1fr_360px]`}
           >
-            <aside className="border-b border-white/10 p-5 lg:border-b-0 lg:border-r">
+            <aside className="order-2 border-b border-white/10 p-5 lg:order-none lg:border-b-0 lg:border-r">
               <div id="map-search" className="flex items-center gap-3 rounded-[8px] border border-white/10 bg-black/25 px-3 py-3">
                 <Search aria-hidden="true" className="size-4 text-volt" />
                 <input
@@ -218,7 +223,7 @@ export function IndiaIntelligenceMap({ standalone = false }: IndiaIntelligenceMa
               </div>
             </aside>
 
-            <div className={`relative overflow-hidden bg-graphite-950 ${standalone ? "min-h-[620px]" : "min-h-[520px]"}`}>
+            <div className={`relative order-1 overflow-hidden bg-graphite-950 lg:order-none ${standalone ? "min-h-[620px]" : "min-h-[520px]"}`}>
               <div ref={mapNode} className="absolute inset-0 opacity-70" />
               <IndiaMapCanvas active={active} onSelect={setActive} zoom={zoom} layers={layers} />
 
@@ -249,7 +254,7 @@ export function IndiaIntelligenceMap({ standalone = false }: IndiaIntelligenceMa
               </div>
             </div>
 
-            <aside className="border-t border-white/10 p-5 lg:border-l lg:border-t-0">
+            <aside className="order-3 border-t border-white/10 p-5 lg:order-none lg:border-l lg:border-t-0">
               <div className="flex items-center justify-between">
                 <p className="text-xs uppercase tracking-[0.24em] text-white/40">India intelligence nodes</p>
                 <Filter aria-hidden="true" className="size-4 text-volt" />
@@ -521,11 +526,7 @@ function IndiaMapCanvas({
           key={district.name}
           aria-label={`Open ${district.name} district intelligence`}
           href={`/districts/${slugify(district.name)}`}
-          onClick={(event) => {
-            event.preventDefault();
-            onSelect(index);
-            window.location.href = `/districts/${slugify(district.name)}`;
-          }}
+          onClick={() => onSelect(index)}
           onFocus={() => onSelect(index)}
           onMouseEnter={() => onSelect(index)}
           className="absolute z-20 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-black/55 text-white shadow-[0_0_38px_rgba(102,227,255,0.26)] backdrop-blur-xl transition hover:border-volt/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-volt"

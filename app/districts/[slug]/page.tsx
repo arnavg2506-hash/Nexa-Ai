@@ -5,6 +5,7 @@ import { Activity, ArrowLeft, Building2, FileText, ShieldAlert, TrendingUp } fro
 import { districts, getDistrictBySlug, slugify } from "@/lib/platform-data";
 import { GlassCard } from "@/components/ui/glass-card";
 import { NexaLogo } from "@/components/brand/nexa-logo";
+import { DataDisclosure } from "@/components/ui/data-disclosure";
 
 type DistrictPageProps = {
   params: Promise<{ slug: string }>;
@@ -63,6 +64,10 @@ export default async function DistrictPage({ params }: DistrictPageProps) {
               {district.name}
             </h1>
             <p className="mt-5 text-lg leading-8 text-white/65">{district.report}</p>
+
+            <div className="mt-6">
+              <DataDisclosure compact />
+            </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
               {district.infrastructure.map((project) => (

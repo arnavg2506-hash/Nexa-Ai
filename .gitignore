@@ -1,5 +1,6 @@
 .next/
 .vite/
+.wrangler/
 node_modules/
 out/
 dist/

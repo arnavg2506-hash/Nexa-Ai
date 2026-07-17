@@ -34,6 +34,7 @@ For Resend delivery, verify your sending domain, create an API key and configure
 npm run lint
 npm run typecheck
 npm run build
+npm run build:next
 npm audit
 ```
 

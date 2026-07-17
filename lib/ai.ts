@@ -3,6 +3,35 @@ import { districts, intelligenceMeta, nationalCorridors } from "@/lib/platform-d
 
 export const DEFAULT_OPENAI_MODEL = "gpt-5.6-terra";
 
+type ConversationMessage = {
+  role: "assistant" | "user";
+  content: string;
+};
+
+const districtAliases: Record<string, string[]> = {
+  "Delhi NCR": ["delhi", "new delhi", "gurgaon", "gurugram", "noida", "greater noida", "faridabad", "ghaziabad"],
+  "Mumbai-Panvel": ["mumbai", "bombay", "navi mumbai", "panvel"],
+  Bengaluru: ["bangalore", "bengaluru"],
+  Visakhapatnam: ["visakhapatnam", "vizag"],
+  Kolkata: ["kolkata", "calcutta"],
+  Kochi: ["kochi", "cochin"],
+  "Rajpura-Patiala": ["rajpura", "patiala"],
+  "Jodhpur-Pali": ["jodhpur", "pali"],
+  "Shendra-Bidkin": ["shendra", "bidkin", "aurangabad", "chhatrapati sambhajinagar"],
+  "Agra-Prayagraj": ["agra", "prayagraj", "allahabad"],
+  Koparthy: ["koparthy", "kopparthy"],
+};
+
+function districtSearchTerms(districtName: string) {
+  return [districtName, ...(districtAliases[districtName] ?? [])];
+}
+
+function mentionsDistrict(normalized: string, districtName: string) {
+  return districtSearchTerms(districtName).some((candidate) =>
+    normalized.includes(candidate.toLowerCase()),
+  );
+}
+
 export function getOpenAIClient() {
   const apiKey = process.env.OPENAI_API_KEY;
 
@@ -24,7 +53,11 @@ export function getOpenAIModel() {
 export function buildCopilotContext(prompt: string) {
   const normalized = prompt.toLowerCase();
   const matchedDistricts = districts.filter((district) => {
-    const candidates = [district.name, district.state, ...district.infrastructure];
+    const candidates = [
+      ...districtSearchTerms(district.name),
+      district.state,
+      ...district.infrastructure,
+    ];
     return candidates.some((candidate) => normalized.includes(candidate.toLowerCase()));
   });
   const matchedCorridors = nationalCorridors.filter((corridor) =>
@@ -59,16 +92,19 @@ export function buildCopilotContext(prompt: string) {
   });
 }
 
-export function fallbackCopilotAnswer(prompt: string) {
-  const normalized = prompt.toLowerCase();
+export function fallbackCopilotAnswer(prompt: string, messages: ConversationMessage[] = []) {
+  const conversation = [...messages.map((message) => message.content), prompt].join("\n");
+  const normalized = conversation.toLowerCase();
+  const latestPrompt = prompt.toLowerCase();
   const mentionedDistricts = districts
-    .filter((district) => normalized.includes(district.name.toLowerCase()))
+    .filter((district) => mentionsDistrict(normalized, district.name))
     .slice(0, 4);
   let answer =
     "NEXA ranks India-wide opportunities by national corridor adjacency, freight and port access, airport influence, entry price, liquidity, rental demand, title risk, and 5-7 year growth probability. Start with a corridor shortlist, then validate land title, trunk infrastructure, employment catchment, utilities and exit liquidity before committing capital.";
 
   if (mentionedDistricts.length >= 2) {
     const ranked = [...mentionedDistricts].sort((left, right) => right.score - left.score);
+    const asksAboutRisk = /\b(safer|lower risk|less risky|riskier|execution risk)\b/.test(latestPrompt);
     const comparison = mentionedDistricts
       .map(
         (district) =>
@@ -76,7 +112,15 @@ export function fallbackCopilotAnswer(prompt: string) {
       )
       .join("\n\n");
 
-    answer = `${comparison}\n\nWithin the illustrative model, ${ranked[0].name} leads on composite score. The stronger choice still depends on asset type, entry price, holding period and the evidence available for the exact parcel or project.`;
+    const comparesDelhiAndHyderabad = mentionedDistricts.some((district) => district.name === "Delhi NCR")
+      && mentionedDistricts.some((district) => district.name === "Hyderabad");
+    const conclusion = asksAboutRisk && comparesDelhiAndHyderabad
+      ? "For an established home around INR 1 crore, Hyderabad is the cleaner execution-risk starting point because entry pricing is more forgiving. For land or peripheral plots, neither market earns a lower-risk label until title, access and approvals are verified; Delhi NCR carries higher entry-price and title complexity, while Hyderabad carries peripheral approval risk."
+      : asksAboutRisk
+        ? "There is no responsible blanket lower-risk winner without the asset type and micro-market. Compare the stated risk conditions, then verify title, approvals, access, liquidity and exact entry price before ranking them."
+        : `Within the illustrative model, ${ranked[0].name} leads on composite score. The stronger choice still depends on asset type, entry price, holding period and the evidence available for the exact parcel or project.`;
+
+    answer = `${comparison}\n\n${conclusion}`;
   } else if (mentionedDistricts.length === 1) {
     const [district] = mentionedDistricts;
     answer = `${district.name}, ${district.state}, has an illustrative NEXA score of ${district.score}/100 and a ${district.opportunity.toLowerCase()} opportunity rating. The current model shows ${district.growthForecast.toLowerCase()} with ${district.demandForecast.toLowerCase()}. Infrastructure signals include ${district.infrastructure.join(", ")}. The central downside is ${district.risk.toLowerCase()}.`;

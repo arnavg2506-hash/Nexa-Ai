@@ -150,8 +150,11 @@ export function ComparisonEngine() {
                   {activeMode.rows.map((row) => (
                     <tr key={row.metric} className="border-b border-white/10 last:border-0">
                       <td className="px-5 py-5 text-white/60">{row.metric}</td>
-                      {row.values.map((value) => (
-                        <td key={`${row.metric}-${value}`} className="px-5 py-5 font-semibold text-white">
+                      {row.values.map((value, valueIndex) => (
+                        <td
+                          key={`${row.metric}-${activeMode.columns[valueIndex]}`}
+                          className="px-5 py-5 font-semibold text-white"
+                        >
                           {value}
                         </td>
                       ))}

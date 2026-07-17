@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useSpring } from "framer-motion";
 import { ComparisonEngine } from "@/components/sections/comparison-engine";
+import { DecisionStudio } from "@/components/sections/decision-studio";
 import { DistrictIntelligence } from "@/components/sections/district-intelligence";
 import { EntryExperience } from "@/components/sections/entry-experience";
 import { IndiaIntelligenceMap } from "@/components/sections/india-intelligence-map";
@@ -10,7 +11,6 @@ import { PlatformHero } from "@/components/sections/platform-hero";
 import { PlatformPricing } from "@/components/sections/platform-pricing";
 import { PrivateBriefing } from "@/components/sections/private-briefing";
 import { TrustCenter } from "@/components/sections/trust-center";
-import { LoadingScreen } from "@/components/loading-screen";
 import { NexaLogo } from "@/components/brand/nexa-logo";
 
 export function NexaExperience() {
@@ -23,7 +23,6 @@ export function NexaExperience() {
 
   return (
     <>
-      <LoadingScreen />
       <motion.div
         aria-hidden="true"
         className="fixed left-0 top-0 z-[90] h-1 w-full origin-left bg-gradient-to-r from-volt via-signal to-iris"
@@ -32,13 +31,14 @@ export function NexaExperience() {
       <main id="main-content" tabIndex={-1}>
         <PlatformHero />
         <EntryExperience />
+        <DecisionStudio />
         <IndiaIntelligenceMap />
         <TrustCenter />
         <DistrictIntelligence />
         <ComparisonEngine />
         <InvestorDashboard />
-        <PrivateBriefing />
         <PlatformPricing />
+        <PrivateBriefing />
       </main>
       <Footer />
     </>
@@ -55,11 +55,13 @@ function Footer() {
         </div>
         <div className="flex flex-wrap gap-x-5 gap-y-2">
           <a className="transition hover:text-white" href="#modules">Modules</a>
+          <a className="transition hover:text-white" href="#studio">Studio</a>
           <a className="transition hover:text-white" href="/map">Map</a>
           <a className="transition hover:text-white" href="#trust">Trust</a>
           <a className="transition hover:text-white" href="#districts">Districts</a>
           <a className="transition hover:text-white" href="/compare">Compare</a>
           <a className="transition hover:text-white" href="/dashboard">Dashboard</a>
+          <a className="transition hover:text-white" href="#pricing">Pricing</a>
           <a className="transition hover:text-white" href="#private-briefing">Contact</a>
         </div>
       </div>

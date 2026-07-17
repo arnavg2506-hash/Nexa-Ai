@@ -59,7 +59,7 @@ export async function POST(request: Request) {
   const client = getOpenAIClient();
 
   if (!client) {
-    return NextResponse.json(fallbackCopilotAnswer(prompt), { headers: responseHeaders });
+    return NextResponse.json(fallbackCopilotAnswer(prompt, messages), { headers: responseHeaders });
   }
 
   try {
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        answer: response.output_text || fallbackCopilotAnswer(prompt).answer,
+        answer: response.output_text || fallbackCopilotAnswer(prompt, messages).answer,
         prompt,
         source: "openai",
         model: response.model,
@@ -101,7 +101,7 @@ export async function POST(request: Request) {
     );
   } catch {
     return NextResponse.json(
-      { ...fallbackCopilotAnswer(prompt), source: "fallback-after-provider-error" },
+      { ...fallbackCopilotAnswer(prompt, messages), source: "fallback-after-provider-error" },
       { headers: responseHeaders },
     );
   }

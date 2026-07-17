@@ -17,10 +17,7 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
+      initial={false}
       className={align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}
     >
       <p className="mb-4 text-xs font-semibold uppercase tracking-[0.32em] text-volt">
